@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Reporte from "../reporte/Reporte";
+import Reporte from "./Reporte";
 import axiosUser from "../../config/axiosUser";
 import Swal from "sweetalert2";
 

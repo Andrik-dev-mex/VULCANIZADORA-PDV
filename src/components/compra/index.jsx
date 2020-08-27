@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axiosUser from "../../config/axiosUser";
 import Swal from "sweetalert2";
-import Producto from "../compra/Producto";
+import Producto from "./Producto";
 
 const Venta = (props) => {
   const [productos, setProductos] = useState({
