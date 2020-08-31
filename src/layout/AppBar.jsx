@@ -8,7 +8,6 @@ function Nav() {
     <AppBar>
       <Toolbar>
         <Typography variant = "h6">Vulcanizadora JAM</Typography>
-        <Typography variant = "h6" left>Punto de Venta</Typography>
       </Toolbar>
     </AppBar>
   )
