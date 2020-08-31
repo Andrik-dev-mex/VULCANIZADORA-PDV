@@ -12,6 +12,7 @@ const Reportes = () => {
       console.log(res.data);
     });
   };
+
   const handleDelete = (id) => {
     Swal.fire({
       title: "¿Estás Seguro?",
@@ -24,22 +25,33 @@ const Reportes = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.value) {
-        returnStock(id);
         cancelSold(id);
       }
     });
   };
 
-  const cancelSold = (id) => {
-    axiosUser.delete(`/sold/${id}`).then((res) => {
-      console.log(res);
-      if (res.status !== 200) {
-        Swal.fire("Eliminar Venta", "Error al eliminar", "error");
+  const cancelSold = id => { 
+    let sale  = {};
+    axiosUser.get(`/sold/${id}`)
+    .then(res => {
+      sale = res.data;
+    })
+    .then(() => {
+      if(sale.active){
+        sale.active = false;
+        console.log(sale);
+        axiosUser.put(`/sold/${id}`, sale)
+        .then(res => {console.log(res);})
+        .then(returnStock(id))
+        .catch(error => {console.log(error);});
       } else {
-        Swal.fire("Eliminada", "Venta eliminado con exito", "success");
+        Swal.fire(
+          'Cancelar Venta',
+          'La venta ya esta en estado cancelado',
+          'error'
+        )
       }
-      getVentas();
-    });
+    })
   };
 
   const returnStock = (id) => {
@@ -81,9 +93,11 @@ const Reportes = () => {
             date={venta.date}
             client={venta.client}
             totalProducts={venta.totalProducts}
-            onDelete={handleDelete}
+            onCancel={handleDelete}
             total={venta.total}
             id={venta._id}
+            status = {venta.active}
+            color = {venta.active === false ? 'red' : 'white'}
           />
         ))}
       </tbody>

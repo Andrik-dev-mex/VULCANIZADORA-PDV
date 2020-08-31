@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosUser = axios.create({
-  baseURL: 'https://vulcanizadora-jam.herokuapp.com/',
+  baseURL: 'http://localhost:5000/',
 });
 
 export default axiosUser;
