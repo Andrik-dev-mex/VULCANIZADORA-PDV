@@ -23,22 +23,31 @@ const CorteCaja = () => {
       salesTotal: sale.length,
       total: calculateTotal(),
       totalProducts: calculateTotalProducts()
-    })
-    axiosUser.post(`/addCort`, cort)
-      .then(res => {
-        Swal.fire(
-          'Realizar Corte',
-          res.data.message,
-          'success',
-        );
-      })
-      .then(() => {
-        axiosUser.delete('/deleteSold')
-          .then(res => {
-            console.log(res.data.message);
-            getSales();
-          });
-      });
+    });
+    if (!cort.salesTotal && cort.totalProducts && cort.total === 0) {
+      axiosUser.post(`/addCort`, cort)
+        .then(res => {
+          Swal.fire(
+            'Realizar Corte',
+            res.data.message,
+            'success',
+          );
+        })
+        .then(() => {
+          axiosUser.delete('/deleteSold')
+            .then(res => {
+              console.log(res.data.message);
+              getSales();
+            });
+        });
+    } else {
+      Swal.fire(
+        'Corte de Caja',
+        'No se puede realizar el corte de caja porque no hay nada para guardar.',
+        'error'
+      );
+    }
+
   };
 
   const getSales = () => {
@@ -50,16 +59,28 @@ const CorteCaja = () => {
   const renderCort = () => {
     return (
       <Corte
-        salesTotal={sale.length}
+        salesTotal={calculateSales()}
         total={calculateTotal()}
         totalProducts={calculateTotalProducts()}
       />)
   };
 
+  const calculateSales = () => {
+    let numSales = sale.length;
+    sale.forEach(sales => {
+      if (!sales.active) {
+        numSales -= 1
+      }
+    });
+    return numSales;
+  };
+
   const calculateTotal = () => {
     let total = 0;
     sale.forEach(sales => {
-      total += sales.total;
+      if (sales.active) {
+        total += sales.total;
+      }
     });
     return total;
   };
@@ -67,7 +88,9 @@ const CorteCaja = () => {
   const calculateTotalProducts = () => {
     let total = 0;
     sale.forEach(sales => {
-      total += sales.totalProducts;
+      if (sales.active) {
+        total += sales.totalProducts;
+      }
     });
     return total;
   };

@@ -43,6 +43,7 @@ const Reportes = () => {
         axiosUser.put(`/sold/${id}`, sale)
         .then(res => {console.log(res);})
         .then(returnStock(id))
+        .then(getVentas)
         .catch(error => {console.log(error);});
       } else {
         Swal.fire(
@@ -62,7 +63,6 @@ const Reportes = () => {
       .get(`/sold/${id}`)
       .then((res) => {
         productsSale = res.data.products;
-        console.log(productsSale);
       })
       .then(() => {
         productsSale.forEach((product) => {
