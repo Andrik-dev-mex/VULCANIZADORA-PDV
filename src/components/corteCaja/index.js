@@ -7,24 +7,22 @@ const CorteCaja = () => {
   const [sale, setSale] = useState([]);
 
   const [cort, setCort] = useState({
-    totalProducts: '',
-    total: '',
-    salesTotal: '',
+    totalProducts: 0,
+    total: 0,
+    salesTotal: 0,
+    products: []
   });
 
   const handleSave = (e) => {
     e.preventDefault();
+    calculateData();
     saveCort();
   };
 
 
   const saveCort = () => {
-    setCort({
-      salesTotal: sale.length,
-      total: calculateTotal(),
-      totalProducts: calculateTotalProducts()
-    });
-    if (!cort.salesTotal && cort.totalProducts && cort.total === 0) {
+    console.log(cort);
+    if (cort.total && cort.salesTotal !== 0) {
       axiosUser.post(`/addCort`, cort)
         .then(res => {
           Swal.fire(
@@ -36,7 +34,7 @@ const CorteCaja = () => {
         .then(() => {
           axiosUser.delete('/deleteSold')
             .then(res => {
-              console.log(res.data.message);
+              console.log(cort);
               getSales();
             });
         });
@@ -50,49 +48,69 @@ const CorteCaja = () => {
 
   };
 
-  const getSales = () => {
-    axiosUser.get("/sold/").then((res) => {
-      setSale(res.data);
-    });
+  const getSales = async () => {
+    const res = await axiosUser.get("/sold/");
+    setSale(res.data);
   };
+
 
   const renderCort = () => {
     return (
       <Corte
         salesTotal={calculateSales()}
         total={calculateTotal()}
-        totalProducts={calculateTotalProducts()}
+        totalProducts={calculateProducts()}
       />)
   };
 
-  const calculateSales = () => {
-    let numSales = sale.length;
-    sale.forEach(sales => {
-      if (!sales.active) {
-        numSales -= 1
-      }
-    });
-    return numSales;
-  };
-
-  const calculateTotal = () => {
+  const calculateTotal = () => { 
     let total = 0;
     sale.forEach(sales => {
-      if (sales.active) {
-        total += sales.total;
-      }
+      total += sales.total;
     });
     return total;
   };
 
-  const calculateTotalProducts = () => {
+  const calculateProducts = () => {
     let total = 0;
     sale.forEach(sales => {
-      if (sales.active) {
+      if(sales.active){
         total += sales.totalProducts;
       }
     });
     return total;
+  };
+
+  const calculateSales = () => {
+    let saleTotals = sale.length;
+    sale.forEach(sales => {
+      if(!sales.active){
+        saleTotals -= 1;
+      };
+    });
+    return saleTotals;
+  };
+
+  const calculateData = () => {
+    let numsales = sale.length;
+    let total = 0;
+    let totalProducts = 0;
+    let products = [];
+    sale.forEach(sales => {
+      if (sales.active) {
+        numsales -= 1;
+        total += sales.total;
+        totalProducts += sales.totalProducts;
+        products.push(sales.products);
+      };
+
+    });
+    setCort({
+      totalProducts: totalProducts,
+      total: total,
+      salesTotal: numsales,
+      products: products
+    })
   };
 
   useEffect(() => {
