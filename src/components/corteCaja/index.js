@@ -6,23 +6,21 @@ import Swal from "sweetalert2";
 const CorteCaja = () => {
   const [sale, setSale] = useState([]);
 
-  const [cort, setCort] = useState({
-    totalProducts: 0,
-    total: 0,
-    salesTotal: 0,
-    products: []
-  });
+  let cort = {};
 
   const handleSave = (e) => {
     e.preventDefault();
-    calculateData();
     saveCort();
   };
 
-
   const saveCort = () => {
-    console.log(cort);
-    if (cort.total && cort.salesTotal !== 0) {
+    cort = {
+      totalProducts :calculateProducts(),
+      total : calculateTotal(),
+      salesTotal : calculateSales(),
+    };
+
+    if (calculateTotal() && calculateSales() !== 0) {
       axiosUser.post(`/addCort`, cort)
         .then(res => {
           Swal.fire(
@@ -34,7 +32,6 @@ const CorteCaja = () => {
         .then(() => {
           axiosUser.delete('/deleteSold')
             .then(res => {
-              console.log(cort);
               getSales();
             });
         });
@@ -52,7 +49,6 @@ const CorteCaja = () => {
     const res = await axiosUser.get("/sold/");
     setSale(res.data);
   };
-
 
   const renderCort = () => {
     return (
@@ -78,6 +74,7 @@ const CorteCaja = () => {
         total += sales.totalProducts;
       }
     });
+    console.log(total);
     return total;
   };
 
@@ -88,29 +85,8 @@ const CorteCaja = () => {
         saleTotals -= 1;
       };
     });
+    console.log(saleTotals);
     return saleTotals;
-  };
-
-  const calculateData = () => {
-    let numsales = sale.length;
-    let total = 0;
-    let totalProducts = 0;
-    let products = [];
-    sale.forEach(sales => {
-      if (sales.active) {
-        numsales -= 1;
-        total += sales.total;
-        totalProducts += sales.totalProducts;
-        products.push(sales.products);
-      };
-
-    });
-    setCort({
-      totalProducts: totalProducts,
-      total: total,
-      salesTotal: numsales,
-      products: products
-    })
   };
 
   useEffect(() => {
