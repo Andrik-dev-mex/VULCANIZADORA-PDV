@@ -144,6 +144,14 @@ const Venta = (props) => {
     return totalProducts;
   };
 
+  const renderCant = (cant) => {
+    return(
+      <div>
+        <input type = "number" defaultValue = {cant}/>
+      </div>
+    )
+  };
+
   const renderProductos = () => {
     return (
       <tbody>
@@ -157,7 +165,7 @@ const Venta = (props) => {
             description={producto.description}
             stock={producto.stock}
             price={producto.price}
-            cant={producto.cant}
+            cant={renderCant(producto.cant)}
             importe={producto.price * producto.cant}
             client={producto.client}
             onRemove={removeItem}
