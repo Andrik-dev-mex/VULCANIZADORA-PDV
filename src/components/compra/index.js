@@ -88,7 +88,7 @@ const Venta = (props) => {
   };
 
   const removeItem = (index) => {
-    products.splice(index, 1);
+    console.timeEnd(products.splice(index, 1));
     setProductos({ products: products });
   };
 
@@ -144,14 +144,6 @@ const Venta = (props) => {
     return totalProducts;
   };
 
-  const renderCant = (cant) => {
-    return(
-      <div>
-        <input type = "number" defaultValue = {cant}/>
-      </div>
-    )
-  };
-
   const renderProductos = () => {
     return (
       <tbody>
@@ -165,7 +157,7 @@ const Venta = (props) => {
             description={producto.description}
             stock={producto.stock}
             price={producto.price}
-            cant={renderCant(producto.cant)}
+            cant={producto.cant}
             importe={producto.price * producto.cant}
             client={producto.client}
             onRemove={removeItem}
