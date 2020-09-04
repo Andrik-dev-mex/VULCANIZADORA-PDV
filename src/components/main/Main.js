@@ -10,8 +10,8 @@ function main() {
   return (
     <div className="container">
       <h3 className="display-4 text-center">Bienvenido</h3>
-      <div className="row ">
-        <div className="col-md-4 ">
+      <div className="row">
+        <div className="col-sm mt-2">
           <Card
             title="Ventas"
             img={ImgVenta}
@@ -21,7 +21,7 @@ function main() {
             refe="/venta/"
           />
         </div>
-        <div className="col-md-4">
+        <div className="col-sm mt-2">
           <Card
             title="Inventario"
             img={ImgProducto}
@@ -31,7 +31,7 @@ function main() {
             refe={"/inventario/"}
           />
         </div>
-        <div className="col-md-4">
+        <div className="col-sm mt-2">
           <Card
             title="Reportes"
             img={ImgReporte}
@@ -42,9 +42,8 @@ function main() {
           />
         </div>
       </div>
-      <br></br>
       <div className="row">
-        <div className="col-md-7">
+        <div className="col-sm mt-2">
           <Card
             title="Usuarios"
             img={ImgUsuarios}
@@ -54,7 +53,7 @@ function main() {
             refe="/usuarios"
           />
         </div>
-        <div className="col-md-5">
+        <div className="col-sm mt-2">
           <Card
             title="Corte de Caja"
             img={ImgCorte}

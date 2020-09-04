@@ -13,7 +13,7 @@ const producto = ({ index, id, sku, name, description, stock, price, importe, ca
       <td>{price}</td>
       <td>{importe}</td>
       <td>
-        <button className="btn btn-primary" onclick={() => { onRemove(index); }}>remover</button>
+        <button className="btn btn-primary" onClick={() => { onRemove(index); }}>remover</button>
       </td>
     </tr>
   )

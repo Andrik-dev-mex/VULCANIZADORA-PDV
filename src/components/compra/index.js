@@ -57,6 +57,7 @@ const Venta = (props) => {
           }
           if (Element.cant < Element.stock && exist) {
             Element.cant += 1;
+            exist = true;
           }
         });
 
@@ -68,7 +69,7 @@ const Venta = (props) => {
         if (producto.stock <= 0) {
           Swal.fire(
             "Agregar Producto",
-            "Se acabado el stocks del producto",
+            "Se acabado el stock del producto",
             "error"
           );
         }
@@ -88,7 +89,7 @@ const Venta = (props) => {
   };
 
   const removeItem = (index) => {
-    console.timeEnd(products.splice(index, 1));
+    products.splice(index, 1);
     setProductos({ products: products });
   };
 

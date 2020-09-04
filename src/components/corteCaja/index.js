@@ -18,6 +18,7 @@ const CorteCaja = () => {
       totalProducts :calculateProducts(),
       total : calculateTotal(),
       salesTotal : calculateSales(),
+      products : getProducts(),
     };
 
     if (calculateTotal() && calculateSales() !== 0) {
@@ -59,10 +60,36 @@ const CorteCaja = () => {
       />)
   };
 
+  const getProducts = () => {
+    let productsAux = [];
+    let productNew = {};
+    sale.forEach(sales => {
+      if(sales.active){
+        sales.products.forEach(product => {
+          let name = product.name;
+          let price = product.price;
+          let cant = product.cant;
+          let importe = product.importe;
+          productNew = {
+            name : name,
+            price : price,
+            cant : cant,
+            importe : importe
+          };
+          productsAux.push(productNew);
+        });
+      }
+    });
+    console.log(productNew);
+    return productsAux;
+  };
+
   const calculateTotal = () => { 
     let total = 0;
     sale.forEach(sales => {
-      total += sales.total;
+      if(sales.active){
+        total += sales.total;
+      }
     });
     return total;
   };
