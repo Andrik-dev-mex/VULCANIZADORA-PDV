@@ -3,6 +3,7 @@ import axiosUser from "../../config/axiosUser";
 import Swal from "sweetalert2";
 import Producto from "../compra/Producto";
 
+
 const Venta = (props) => {
   const [productos, setProductos] = useState({
     products: [],
@@ -54,19 +55,24 @@ const Venta = (props) => {
         products.forEach((Element) => {
           if (Element.sku === producto.sku) {
             exist = true;
+          }else {
+            exist = false;
           }
-          if (Element.cant < Element.stock && exist) {
+
+          if(exist){
             Element.cant += 1;
-            exist = true;
           }
+          
         });
 
-        if (exist === false && producto.stock > 0) {
+        console.log(exist);
+
+        if (exist === false  && producto.stock > 0) {
           producto.cant = 1;
           products.push(producto);
         }
 
-        if (producto.stock <= 0) {
+        if (exist && producto.stock <= 0) {
           Swal.fire(
             "Agregar Producto",
             "Se acabado el stock del producto",
