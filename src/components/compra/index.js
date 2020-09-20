@@ -30,13 +30,12 @@ const Venta = (props) => {
   };
 
   const guardarVenta = () => {
-    updateStock();
     axiosUser.post("/sold/", productos).then((res) => {
       if (res.status === 200) {
         Swal.fire("Venta realizada con exito", "", "success");
         setProductos({ products: [] });
       }
-    });
+    }).catch(error => {console.log(error);})
   };
 
   const disableSold = () => {
@@ -53,32 +52,40 @@ const Venta = (props) => {
         let exist = false;
         let producto = res.data;
         products.forEach((Element) => {
-          if (Element.sku === producto.sku) {
+          if (Element.sku === sku) {
             exist = true;
-          }else {
+          }
+
+          if(Element.sku !== sku && !exist){ 
             exist = false;
           }
 
-          if(exist){
+          if(exist && Element.sku === sku && Element.cant < producto.stock){
             Element.cant += 1;
           }
-          
-        });
 
-        console.log(exist);
+          if(exist && Element.sku === sku && Element.cant === producto.stock) { 
+            Swal.fire(
+              "Agregar Producto",
+              "Se acabado el stock del producto",
+              "error"
+            );
+          }
+        });
 
         if (exist === false  && producto.stock > 0) {
           producto.cant = 1;
           products.push(producto);
         }
 
-        if (exist && producto.stock <= 0) {
+        if (producto.stock <= 0) {
           Swal.fire(
             "Agregar Producto",
             "Se acabado el stock del producto",
             "error"
           );
         }
+
         setProductos({
           products: products,
           totalProducts: countProducts(),
@@ -108,7 +115,7 @@ const Venta = (props) => {
         if (res.data.message) {
           console.log("Stock Actualizado");
         }
-      });
+      }).then(() => {guardarVenta()}).catch(error => {console.log(error);})
     });
   };
 
@@ -221,7 +228,7 @@ const Venta = (props) => {
           </p>
           <button
             onClick={() => {
-              guardarVenta();
+              updateStock();
             }}
             type="button"
             className="btn btn-primary mr-sm-2"
