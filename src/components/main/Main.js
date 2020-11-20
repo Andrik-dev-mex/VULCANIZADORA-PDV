@@ -5,68 +5,36 @@ import ImgProducto from "./producto.png";
 import ImgReporte from "./periodico.png";
 import ImgUsuarios from "./grupo.png";
 import ImgCorte from '../main/caja.png';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from "@material-ui/core/Typography";
+import { Avatar } from "@material-ui/core";
 
-function main() {
+const useStyles = makeStyles(theme => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  avatar : {
+    width: '10em',
+    height: '10em'
+  }
+}));
+
+export default function Main() {
+  const classes = useStyles();
   return (
-    <div className="container">
-      <h3 className="display-4 text-center">Bienvenido</h3>
-      <div className="row ">
-        <div className="col-md-4 ">
-          <Card
-            title="Ventas"
-            img={ImgVenta}
-            altl="Venta"
-            text="Producto o Servicio"
-            textButton="Vender"
-            refe="/venta/"
-          />
-        </div>
-        <div className="col-md-4">
-          <Card
-            title="Inventario"
-            img={ImgProducto}
-            altl="Inventario"
-            text="Agregar o Eliminar Productos"
-            textButton="Administrar"
-            refe={"/inventario/"}
-          />
-        </div>
-        <div className="col-md-4">
-          <Card
-            title="Reportes"
-            img={ImgReporte}
-            altl="Reporte"
-            text="¿Cómo nos va?"
-            textButton="Ver"
-            refe={"/reportes/"}
-          />
-        </div>
-      </div>
-      <br></br>
-      <div className="row">
-        <div className="col-md-7">
-          <Card
-            title="Usuarios"
-            img={ImgUsuarios}
-            altl="Usuarios"
-            text="Agregar o Eliminar Usuarios"
-            textButton="Administrar"
-            refe="/usuarios"
-          />
-        </div>
-        <div className="col-md-5">
-          <Card
-            title="Corte de Caja"
-            img={ImgCorte}
-            altl="Usuarios"
-            text="Es hora de terminar el día"
-            textButton="Realizar"
-            refe={"/corteCaja/"}
-          />
-        </div>
-      </div>
+    <div className={classes.container}>
+      <Avatar className={classes.avatar}></Avatar>
+      <Typography variant="h2" color="initial">
+        Bienvenido Usuario
+      </Typography>
+      <Typography variant='body2'>
+        SISTEMA DE GESTION DE INVENTARIO Y VENTAS v1.0
+      </Typography>
+      <a href="https://www.github.com/Andrik-dev-mex">Desarrollador </a>
     </div>
+
   );
 }
-
-export default main;

@@ -2,8 +2,24 @@ import React, { useState } from "react";
 import axiosUser from "../../config/axiosUser";
 import Swal from "sweetalert2";
 import Producto from "../compra/Producto";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  table: {
+    minWidth: 700,
+  },
+}));
 
 const Venta = (props) => {
+  const classes = useStyles();
+
   const [productos, setProductos] = useState({
     products: [],
     totalProducts: "",
@@ -144,94 +160,64 @@ const Venta = (props) => {
     return totalProducts;
   };
 
-  const renderProductos = () => {
+  const renderProducts = () => {
     return (
-      <tbody>
-        {productos.products.map((producto, index) => (
-          <Producto
-            index={index}
-            key={index}
-            id={producto._id}
-            sku={producto.sku}
-            name={producto.name}
-            description={producto.description}
-            stock={producto.stock}
-            price={producto.price}
-            cant={producto.cant}
-            importe={producto.price * producto.cant}
-            client={producto.client}
-            onRemove={removeItem}
-          />
-        ))}
-      </tbody>
-    );
+      productos.products.map((data, index) => (
+        <Producto
+          index={index}
+          id={data.id}
+          sku={data.sku}
+          name={data.name}
+          description={data.description}
+          stock={data.stock}
+          price={data.price}
+          importe={data.importe}
+          cant={data.cant}
+          onRemove={removeItem}
+          totalProductos={countProducts()}
+        />
+      ))
+    )
   };
 
   return (
-    <div className="container">
-      <h4 className="display-4 text-center ">Ventas</h4>
-      <div className="card bg-dark text-white ">
-        <div className="card-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-row">
-              <div className="form-group col-md-5">
-                <input
-                  type="text"
-                  className="form-control"
-                  name="sku"
-                  placeholder="Código de Producto"
-                  onChange={handleValue}
-                />
-              </div>
-              <div className="form-group col-md-7">
-                <button type="submit" className="btn btn-primary">
-                  Buscar
-                </button>
-              </div>
-            </div>
-          </form>
-          <table className="table table-striped table-hover text-center table-dark">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">sku</th>
-                <th scope="col">Cantidad</th>
-                <th scope="col">Producto</th>
-                <th scope="col">Descripción</th>
-                <th scope="col">Piezas Disponibles</th>
-                <th scope="col">Precio</th>
-                <th scope="col">Importe</th>
-                <th scope="col">Modificar</th>
-              </tr>
-            </thead>
-            {renderProductos()}
-          </table>
-          <p
-            className="text-right"
-            style={{ fontSize: 35 + "px", color: "red" }}
-          >
-            Total a Pagar : ${totalPrice()}
-          </p>
-          <button
-            onClick={() => {
-              guardarVenta();
-            }}
-            type="button"
-            className="btn btn-primary mr-sm-2"
-            disabled={disableSold()}
-          >
-            Cobrar
-          </button>
-          <button
-            className="btn btn-danger mr-sm-3"
-            onClick={() => deleteAll()}
-            disabled={disableSold()}
-          >
-            Borrar todo
-          </button>
-        </div>
-      </div>
-    </div>
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="spanning table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="center" colSpan={3}>
+              Details
+            </TableCell>
+            <TableCell align="right">Price</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Desc</TableCell>
+            <TableCell align="right">Qty.</TableCell>
+            <TableCell align="right">Unit</TableCell>
+            <TableCell align="right">Sum</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableRow>
+          <TableCell rowSpan={3} />
+          <TableCell colSpan={2}>Subtotal</TableCell>
+          <TableCell align="right"></TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Tax</TableCell>
+          <TableCell align="right"></TableCell>
+          <TableCell align="right"></TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell colSpan={2}>Total</TableCell>
+          <TableCell align="right"></TableCell>
+        </TableRow>
+        <TableBody>
+          {
+            renderProducts()
+          }
+        </TableBody>
+      </Table>
+    </TableContainer >
   );
 };
 

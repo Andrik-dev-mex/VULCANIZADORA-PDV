@@ -6,10 +6,11 @@ import './App.css';
 
 function App() {
   return (
-      <Router>
-        <AppBar />
+    <Router>
+      <AppBar>
         <Routes />
-      </Router>
+      </AppBar>
+    </Router>
   );
 }
 

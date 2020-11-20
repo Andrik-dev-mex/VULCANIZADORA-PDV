@@ -1,20 +1,14 @@
 import React from 'react';
+import { TableRow, TableCell } from '@material-ui/core';
 
-const producto = ({index, id, sku, name, description, stock, price, importe, cant, onRemove,totalProductos,client}) =>{
-  return(
-    <tr>
-      <th scope = "row">{index + 1}</th>
-      <td>{sku}</td>
-      <td>{cant}</td>
-      <td>{name}</td>
-      <td>{description}</td>
-      <td>{stock}</td>
-      <td>{price}</td>
-      <td>{importe}</td>
-      <td>
-        <button className = "btn btn-primary" onClick = {() => {onRemove(index);}}>Remover</button>
-      </td>
-    </tr>
+const producto = ({ index, id, sku, name, description, stock, price, importe, cant, onRemove, totalProductos, client }) => {
+  return (
+    <TableRow key={index}>
+      <TableCell>{name}</TableCell>
+      <TableCell align="right">{cant}</TableCell>
+      <TableCell align="right">{importe}</TableCell>
+      <TableCell align="right">{price}</TableCell>
+    </TableRow>
   )
 }
 
