@@ -1,19 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import axiosUser from "../../config/axiosUser";
 import Swal from "sweetalert2";
 import Producto from "../compra/Producto";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core/styles';
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+import SaveIcon from "@material-ui/icons/Save";
+import Typography from "@material-ui/core/Typography";
+import DeleteIcon from "@material-ui/icons/Delete";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 700,
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  containerForm: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+    },
   },
 }));
 
@@ -28,6 +50,10 @@ const Venta = (props) => {
 
   const [valor, setValor] = useState({
     sku: "",
+  });
+
+  const [newCant, setNewCant] = useState({
+    cant: "0",
   });
 
   const { sku } = valor;
@@ -52,14 +78,6 @@ const Venta = (props) => {
         setProductos({ products: [] });
       }
     });
-  };
-
-  const disableSold = () => {
-    if (productos.products.length === 0) {
-      return true;
-    } else if (productos.products.length > 0) {
-      return false;
-    }
   };
 
   const findProduct = (sku) => {
@@ -153,7 +171,7 @@ const Venta = (props) => {
   };
 
   const countProducts = () => {
-    let totalProducts = 0;
+    let totalProducts = "";
     products.forEach((product) => {
       totalProducts += product.cant;
     });
@@ -161,63 +179,132 @@ const Venta = (props) => {
   };
 
   const renderProducts = () => {
-    return (
-      productos.products.map((data, index) => (
-        <Producto
-          index={index}
-          id={data.id}
-          sku={data.sku}
-          name={data.name}
-          description={data.description}
-          stock={data.stock}
-          price={data.price}
-          importe={data.importe}
-          cant={data.cant}
-          onRemove={removeItem}
-          totalProductos={countProducts()}
-        />
-      ))
-    )
+    return productos.products.map((data, index) => (
+      <Producto
+        index={index}
+        id={data.id}
+        sku={data.sku}
+        name={data.name}
+        description={data.description}
+        stock={data.stock}
+        price={data.price}
+        importe={data.price * data.cant}
+        cant={data.cant}
+        onRemove={removeItem}
+        client={data.client}
+        totalProductos={countProducts()}
+        handleChangeCant={handleChangeCant}
+        handleSubmitCant={handleSubmitCant}
+      />
+    ));
   };
 
+  const handleChangeCant = (e) => {
+    setNewCant({
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmitCant = (e, index) => {
+    e.preventDefault();
+    newCantFunction(index);
+  };
+
+  const newCantFunction = (index) => {
+    products[index].cant = newCant.cant;
+    if (products[index].cant < products[index].stock) {
+      setProductos({
+        products: products,
+      });
+    }
+
+    if (products[index].cant <= 0) {
+      alert("no hay stock");
+      products[index].cant = 1;
+      setProductos({
+        products: products,
+      });
+    }
+  };
+
+  console.log(products);
+
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="spanning table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="center" colSpan={3}>
-              Details
-            </TableCell>
-            <TableCell align="right">Price</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Desc</TableCell>
-            <TableCell align="right">Qty.</TableCell>
-            <TableCell align="right">Unit</TableCell>
-            <TableCell align="right">Sum</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableRow>
-          <TableCell rowSpan={3} />
-          <TableCell colSpan={2}>Subtotal</TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>Tax</TableCell>
-          <TableCell align="right"></TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell colSpan={2}>Total</TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-        <TableBody>
-          {
-            renderProducts()
-          }
-        </TableBody>
-      </Table>
-    </TableContainer >
+    <Fragment>
+      <div className={classes.containerForm}>
+        <form className={classes.root} onSubmit={handleSubmit}>
+          <TextField
+            name="sku"
+            label="Codigo de Producto"
+            variant="outlined"
+            onChange={handleValue}
+            size="small"
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            endIcon={<SearchIcon />}
+            disabled={sku === ""}
+          >
+            Buscar
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            color="secondary"
+            endIcon={<SaveIcon />}
+            disabled={!productos.products.length > 0}
+            onClick={guardarVenta}
+          >
+            Cerrar Venta
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            endIcon={<DeleteIcon />}
+            onClick={deleteAll}
+            disabled={!productos.products.length > 0}
+          >
+            Borrar Todo
+          </Button>
+        </form>
+        <Typography variant="body1">
+          Productos agregados: {countProducts()}
+        </Typography>
+      </div>
+      <div className={classes.container}>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="spanning table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" colSpan={6}>
+                  Detalles
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Descripcion</TableCell>
+                <TableCell align="right">Cantidad</TableCell>
+                <TableCell align="right">Precio</TableCell>
+                <TableCell align="right">Importe</TableCell>
+                <TableCell align="center">Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {renderProducts()}
+              <TableRow>
+                <TableCell rowSpan={4} />
+                <TableCell colSpan={4}>Total</TableCell>
+                <TableCell align="right">
+                  {totalPrice() === 0 ? "" : totalPrice()}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    </Fragment>
   );
 };
 

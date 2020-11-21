@@ -1,10 +1,4 @@
 import React from "react";
-import Card from "./CardMain";
-import ImgVenta from "./m-ventas.png";
-import ImgProducto from "./producto.png";
-import ImgReporte from "./periodico.png";
-import ImgUsuarios from "./grupo.png";
-import ImgCorte from '../main/caja.png';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
 import { Avatar } from "@material-ui/core";
